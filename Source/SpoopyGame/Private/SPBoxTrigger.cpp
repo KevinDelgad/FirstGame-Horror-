@@ -8,22 +8,36 @@
 // Sets default values
 ASPBoxTrigger::ASPBoxTrigger()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	Root = CreateDefaultSubobject<USceneComponent>("Root");
+	RootComponent = Root;
+	
 	TriggerBox = CreateDefaultSubobject<UBoxComponent>("TriggerBox");
+	TriggerBox->SetupAttachment(Root);
 }
 
 void ASPBoxTrigger::TriggerFire_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	//Implement in Children Functiion
+	//Implement in Children Function
 }
 
 
-void ASPBoxTrigger::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ASPBoxTrigger::EndTriggerFire_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	
+	//Implement in Children Function
+}
+
+void ASPBoxTrigger::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	TriggerFire(OverlappedComponent,OtherActor,OtherComp, OtherBodyIndex,bFromSweep, SweepResult);
+}
+
+void ASPBoxTrigger::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	EndTriggerFire(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex);
 }
 
 
@@ -31,6 +45,7 @@ void ASPBoxTrigger::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ASPBoxTrigger::OnActorOverlap);
+	TriggerBox->OnComponentEndOverlap.AddDynamic(this, &ASPBoxTrigger::OnOverlapEnd);
 }
 
 
