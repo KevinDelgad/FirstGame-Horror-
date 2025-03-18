@@ -29,7 +29,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	float TraceRadius;
 
+	UPROPERTY()
+	AActor* TargetActor;
+	
 	TEnumAsByte<ECollisionChannel> CollisionChannel;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="UI")
+	TSubclassOf<class USWorldUserWidget> DefaultWidgetClass;
+
+	UPROPERTY()
+	USWorldUserWidget* DefaultWidgetInstance;
+	
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

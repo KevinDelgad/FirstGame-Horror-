@@ -3,7 +3,10 @@
 
 #include "SPInteractComponent.h"
 
+#include "SPCharacter.h"
 #include "SPInteractInterface.h"
+#include "SWorldUserWidget.h"
+#include "Camera/CameraComponent.h"
 
 // Sets default values for this component's properties
 USPInteractComponent::USPInteractComponent()
@@ -27,17 +30,22 @@ void USPInteractComponent::BeginPlay()
 	
 }
 
-void USPInteractComponent::Interact()
+
+// Called every frame
+void USPInteractComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
+
+	TargetActor = nullptr;
+	
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
 	FCollisionObjectQueryParams params;
 	params.AddObjectTypesToQuery(CollisionChannel);
 
-	APawn* PawnOwner = Cast<APawn>(GetOwner());
+	ASPCharacter* PawnOwner = Cast<ASPCharacter>(GetOwner());
 
-	FVector EyeLocation;
-	FRotator EyeRotation;
-	
-	PawnOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
+	FVector EyeLocation = PawnOwner->FindComponentByClass<UCameraComponent>()->GetComponentLocation();
+	FRotator EyeRotation = PawnOwner->GetControlRotation();
 
 	FVector End = EyeLocation + (EyeRotation.Vector() * InteractDistance);
 
@@ -56,20 +64,43 @@ void USPInteractComponent::Interact()
 		{
 			if (HitActor->Implements<USPInteractInterface>())
 			{
-				ISPInteractInterface::Execute_Interact(HitActor);
+				TargetActor = HitActor;
+			}
+
+			if (TargetActor)
+			{
+				if (DefaultWidgetInstance == nullptr && ensure(DefaultWidgetClass))
+				{
+					DefaultWidgetInstance = CreateWidget<USWorldUserWidget>(GetWorld(), DefaultWidgetClass);
+				}
+
+				if (DefaultWidgetInstance)
+				{
+					DefaultWidgetInstance->AttachedActor = TargetActor;
+
+					if (!DefaultWidgetInstance->IsInViewport())
+					{
+						DefaultWidgetInstance->AddToViewport();
+					}
+				}
+			}
+			else
+			{
+				if (DefaultWidgetInstance)
+				{
+					DefaultWidgetInstance->RemoveFromParent();
+				}
 			}
 		}
 	}
-
-	DrawDebugLine(GetWorld(), EyeLocation, End, FColor::White, false, 5, 0, 2.0f);
+	//DrawDebugLine(GetWorld(), EyeLocation, End, FColor::White, false, 30, 0, 2.0f);
 }
 
-
-// Called every frame
-void USPInteractComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void USPInteractComponent::Interact()
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
+	if (TargetActor != nullptr)
+	{
+		ISPInteractInterface::Execute_Interact(TargetActor);
+	}
+	
 }
-
