@@ -3,6 +3,7 @@
 
 #include "SPCharacter.h"
 
+#include "SPInteractComponent.h"
 #include "Camera/CameraComponent.h"
 
 // Sets default values
@@ -11,10 +12,13 @@ ASPCharacter::ASPCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	HeadConnectionName = FName("head");
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
-	CameraComp->SetupAttachment(RootComponent);
+	CameraComp->SetupAttachment(GetMesh());
 	CameraComp->bUsePawnControlRotation = true;
 	bUseControllerRotationYaw = false;
+
+	InteractComp = CreateDefaultSubobject<USPInteractComponent>("InteractComponent");
 	
 }
 
@@ -22,7 +26,9 @@ ASPCharacter::ASPCharacter()
 void ASPCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	FAttachmentTransformRules ATR = FAttachmentTransformRules(EAttachmentRule::KeepRelative, true);
+	CameraComp->AttachToComponent(GetMesh(), ATR, HeadConnectionName);
 }
 
 // Called every frame
@@ -59,6 +65,15 @@ void ASPCharacter::MoveRight(float Value)
 	AddMovementInput(RightVector, Value);
 }
 
+void ASPCharacter::PerformInteract()
+{
+	if (InteractComp)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("InteractComp->IsInteracting"));
+		InteractComp->Interact();
+	}
+}
+
 // Called to bind functionality to input
 void ASPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -72,5 +87,7 @@ void ASPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 
+	//Interact
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &ASPCharacter::PerformInteract);
 }
 

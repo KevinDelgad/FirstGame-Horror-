@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "SPCharacter.generated.h"
 
+class USPInteractComponent;
 class UCameraComponent;
 
 UCLASS()
@@ -23,10 +24,16 @@ protected:
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);
-		
+
+	void PerformInteract();
+	
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* CameraComp;
-	
+
+	UPROPERTY(VisibleAnywhere)
+	USPInteractComponent* InteractComp;
+
+	FName HeadConnectionName;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

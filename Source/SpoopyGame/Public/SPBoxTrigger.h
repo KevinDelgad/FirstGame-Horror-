@@ -22,6 +22,7 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* TriggerBox;
 
+	UPROPERTY(VisibleAnywhere)
 	USceneComponent* Root;
 	
 	virtual void PostInitializeComponents() override;
