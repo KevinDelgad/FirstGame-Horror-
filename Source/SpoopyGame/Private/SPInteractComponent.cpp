@@ -78,6 +78,8 @@ void USPInteractComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 				{
 					DefaultWidgetInstance->AttachedActor = TargetActor;
 
+					
+					
 					if (!DefaultWidgetInstance->IsInViewport())
 					{
 						DefaultWidgetInstance->AddToViewport();
@@ -100,7 +102,6 @@ void USPInteractComponent::Interact()
 {
 	if (TargetActor != nullptr)
 	{
-		ISPInteractInterface::Execute_Interact(TargetActor);
+		ISPInteractInterface::Execute_Interact(TargetActor, Cast<APawn>(GetOwner()));
 	}
-	
 }

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
 #include "SPInteractComponent.generated.h"
 
@@ -31,7 +32,8 @@ protected:
 
 	UPROPERTY()
 	AActor* TargetActor;
-	
+
+	UPROPERTY(EditDefaultsOnly)
 	TEnumAsByte<ECollisionChannel> CollisionChannel;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="UI")
@@ -39,6 +41,9 @@ protected:
 
 	UPROPERTY()
 	USWorldUserWidget* DefaultWidgetInstance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="UI")
+	FGameplayTagContainer GameplayTags;
 	
 public:	
 	// Called every frame
