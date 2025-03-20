@@ -3,6 +3,7 @@
 
 #include "SPCharacter.h"
 
+#include "SPActionComponent.h"
 #include "SPInteractComponent.h"
 #include "Camera/CameraComponent.h"
 
@@ -19,6 +20,8 @@ ASPCharacter::ASPCharacter()
 	bUseControllerRotationYaw = false;
 
 	InteractComp = CreateDefaultSubobject<USPInteractComponent>("InteractComponent");
+
+	ActionComp = CreateDefaultSubobject<USPActionComponent>("ActionComponent");
 	
 }
 
@@ -74,6 +77,15 @@ void ASPCharacter::PerformInteract()
 	}
 }
 
+void ASPCharacter::Pickup()
+{
+	if (InteractComp)
+	{
+		ActionComp->StartActionByName(this,"Pickup");
+	}
+}
+
+
 // Called to bind functionality to input
 void ASPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -89,5 +101,6 @@ void ASPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	//Interact
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &ASPCharacter::PerformInteract);
+	PlayerInputComponent->BindAction("Pickup", IE_Pressed, this, &ASPCharacter::Pickup);
 }
 

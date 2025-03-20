@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "SPCharacter.generated.h"
 
+class USPActionComponent;
 class USPInteractComponent;
 class UCameraComponent;
 
@@ -26,12 +27,17 @@ protected:
 	void MoveRight(float Value);
 
 	void PerformInteract();
+
+	void Pickup();
 	
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* CameraComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USPInteractComponent* InteractComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USPActionComponent* ActionComp;
 
 	FName HeadConnectionName;
 public:	
