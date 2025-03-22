@@ -88,7 +88,7 @@ bool USPAction_Pickup::SetHitTarget(const ASPCharacter* InstigatorCharacter)
 void USPAction_Pickup::StartAction_Implementation(AActor* Instigator)
 {
 	ASPCharacter* Character = Cast<ASPCharacter>(Instigator);
-
+	HitTarget = nullptr;
 	if (Character)
 	{
 		if (!SetHitTarget(Character))

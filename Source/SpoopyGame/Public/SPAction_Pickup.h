@@ -26,7 +26,7 @@ class SPOOPYGAME_API USPAction_Pickup : public USPAction , public FTickableGameO
 	UFUNCTION(BlueprintCallable, Category = "PickUp")
 	AActor* CreateActorClone( AActor* Instigator ,TSubclassOf<AActor> PickUpObj, FTransform PickupTransform);
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadWrite, Category = "PickUp")
 	AActor* HitTarget;
 
 	//Raycast for objectToPickup
