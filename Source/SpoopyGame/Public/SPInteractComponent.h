@@ -32,9 +32,15 @@ protected:
 
 	UPROPERTY()
 	AActor* TargetActor;
+	
+	UPROPERTY()
+	AActor* HighlightActor;
 
+	UPROPERTY()
+	UStaticMeshComponent* HighlightedActorMesh;
+	
 	UPROPERTY(EditDefaultsOnly)
-	TEnumAsByte<ECollisionChannel> CollisionChannel;
+	TArray<TEnumAsByte<ECollisionChannel>> ChannelsToCollide;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="UI")
 	TSubclassOf<class USWorldUserWidget> DefaultWidgetClass;
@@ -44,7 +50,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="UI")
 	FGameplayTagContainer GameplayTags;
-	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="UI")
+	TSubclassOf<class AActor> PickupActorClass;
+
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	UMaterial* HighlightMaterial;
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

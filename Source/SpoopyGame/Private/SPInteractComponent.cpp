@@ -17,7 +17,6 @@ USPInteractComponent::USPInteractComponent()
 
 	InteractDistance = 160.0f;
 	TraceRadius = 10.0f;
-	CollisionChannel = ECC_WorldStatic;
 }
 
 
@@ -36,11 +35,19 @@ void USPInteractComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 {
 
 	TargetActor = nullptr;
+	HighlightActor = nullptr;
 	
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	FCollisionObjectQueryParams params;
-	params.AddObjectTypesToQuery(CollisionChannel);
+
+	if (ensure(!ChannelsToCollide.IsEmpty()))
+	{
+		for (TEnumAsByte Channel : ChannelsToCollide)
+		{
+			params.AddObjectTypesToQuery(Channel);
+		}
+	}
 
 	ASPCharacter* PawnOwner = Cast<ASPCharacter>(GetOwner());
 
@@ -62,11 +69,18 @@ void USPInteractComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 		
 		if (AActor* HitActor = Hit.GetActor())
 		{
+			//Interaction Check
 			if (HitActor->Implements<USPInteractInterface>())
 			{
 				TargetActor = HitActor;
 			}
 
+			// Pickup / Highlight Check
+			if (ensure(PickupActorClass) && HitActor->IsA(PickupActorClass))
+			{
+				HighlightActor = HitActor;
+			}
+			
 			if (TargetActor)
 			{
 				if (DefaultWidgetInstance == nullptr && ensure(DefaultWidgetClass))
@@ -77,8 +91,6 @@ void USPInteractComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 				if (DefaultWidgetInstance)
 				{
 					DefaultWidgetInstance->AttachedActor = TargetActor;
-
-					
 					
 					if (!DefaultWidgetInstance->IsInViewport())
 					{
@@ -93,6 +105,40 @@ void USPInteractComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 					DefaultWidgetInstance->RemoveFromParent();
 				}
 			}
+
+
+			if (HighlightActor)
+			{
+				//Current Iteration Found Mesh
+				UStaticMeshComponent* FoundHighlightMesh = HighlightActor->FindComponentByClass<UStaticMeshComponent>();
+
+				//Check for previously found Mesh and clear if not current found mesh
+				if (HighlightedActorMesh && HighlightedActorMesh != FoundHighlightMesh)
+				{
+					HighlightedActorMesh->SetOverlayMaterial(nullptr);
+				}
+
+				//Set New Highlight if No Highlight found or New Highlight object is selected
+				if ( !HighlightedActorMesh || (HighlightedActorMesh != FoundHighlightMesh))
+				{
+					//Set Highlight on Actor
+					HighlightedActorMesh = FoundHighlightMesh;
+					if (HighlightedActorMesh)
+					{
+						HighlightedActorMesh->SetOverlayMaterial(HighlightMaterial);
+					}
+				}
+			}
+			else
+			{
+				if (HighlightedActorMesh)
+				{
+					//Clear current Highlight and clear reference (If Found)
+					HighlightedActorMesh->SetOverlayMaterial(nullptr);
+					HighlightedActorMesh = nullptr;
+				}
+			}
+
 		}
 	}
 	//DrawDebugLine(GetWorld(), EyeLocation, End, FColor::White, false, 30, 0, 2.0f);
