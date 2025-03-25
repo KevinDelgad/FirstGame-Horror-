@@ -48,8 +48,8 @@ protected:
 	UPROPERTY()
 	USWorldUserWidget* DefaultWidgetInstance;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="UI")
-	FGameplayTagContainer GameplayTags;
+	UPROPERTY(EditDefaultsOnly, Category="Tags")
+	FGameplayTag InteractTag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="UI")
 	TSubclassOf<class AActor> PickupActorClass;

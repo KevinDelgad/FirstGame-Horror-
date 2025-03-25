@@ -4,6 +4,7 @@
 #include "SPCharacter.h"
 
 #include "SPActionComponent.h"
+#include "SPCharacterState.h"
 #include "SPInteractComponent.h"
 #include "Camera/CameraComponent.h"
 
@@ -22,6 +23,8 @@ ASPCharacter::ASPCharacter()
 	InteractComp = CreateDefaultSubobject<USPInteractComponent>("InteractComponent");
 
 	ActionComp = CreateDefaultSubobject<USPActionComponent>("ActionComponent");
+
+	CharacterState = CreateDefaultSubobject<USPCharacterState>("CharacterState");
 	
 }
 

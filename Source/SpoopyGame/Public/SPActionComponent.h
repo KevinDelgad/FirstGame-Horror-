@@ -48,4 +48,7 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category="Actions")
 	bool CheckForAction(FName ActionName);
+
+	UFUNCTION(BlueprintCallable, Category="Actions")
+	static USPActionComponent* GetActions(AActor* FromActor);
 };

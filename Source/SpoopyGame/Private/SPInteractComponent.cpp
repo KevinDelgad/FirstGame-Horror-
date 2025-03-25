@@ -4,6 +4,7 @@
 #include "SPInteractComponent.h"
 
 #include "SPCharacter.h"
+#include "SPGameplayFunctionLibrary.h"
 #include "SPInteractInterface.h"
 #include "SWorldUserWidget.h"
 #include "Camera/CameraComponent.h"
@@ -146,8 +147,13 @@ void USPInteractComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 
 void USPInteractComponent::Interact()
 {
-	if (TargetActor != nullptr)
+
+	if (ensureMsgf(InteractTag.IsValid(), TEXT("Interact Tag Not Set")))
 	{
-		ISPInteractInterface::Execute_Interact(TargetActor, Cast<APawn>(GetOwner()));
+		if (TargetActor != nullptr && !USPGameplayFunctionLibrary::CheckPlayerForTag(GetOwner(), InteractTag))
+		{
+			ISPInteractInterface::Execute_Interact(TargetActor, Cast<APawn>(GetOwner()));
+		}
 	}
+
 }

@@ -117,3 +117,13 @@ bool USPActionComponent::CheckForAction(FName ActionName)
 	return false;
 }
 
+USPActionComponent* USPActionComponent::GetActions(AActor* FromActor)
+{
+	if (FromActor)
+	{
+		return FromActor->GetComponentByClass<USPActionComponent>();
+	}
+
+	return nullptr;
+}
+

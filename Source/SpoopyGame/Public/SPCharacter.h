@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "SPCharacter.generated.h"
 
+class USPCharacterState;
 class USPActionComponent;
 class USPInteractComponent;
 class UCameraComponent;
@@ -39,6 +40,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USPActionComponent* ActionComp;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USPCharacterState* CharacterState;
+	
 	FName HeadConnectionName;
 public:	
 	// Called every frame
